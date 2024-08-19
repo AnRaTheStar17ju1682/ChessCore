@@ -1,3 +1,5 @@
 .*
 !.gitignore
 *(temp)
+default_chess
+__pycache__
