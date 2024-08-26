@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "chesscore_pisca"
+dynamic = ["version"]
+description = 'This is PISKA - [P]ersonal [I]nitial [S]cenarios [C]hess [A]pplication'
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MPL-2.0"}
+keywords = ["chess"]
+authors = [
+  { name = "AnRaTheStar17ju1682", email = "outworlddevourer1337darklordking666@outlook.com" },
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+]
+dependencies = [
+	"pytest"
+]
+
+[project.urls]
+Homepage = "https://t.me/chesscore_pisca"
+Documentation = "https://github.com/AnRaTheStar17ju1682/chesscore_pisca#readme"
+Issues = "https://github.com/AnRaTheStar17ju1682/chesscore_pisca/issues"
+Source = "https://github.com/AnRaTheStar17ju1682/chesscore_pisca"
+
+[tool.hatch.version]
+path = "src/chesscore_pisca/__about__.py"
+
+[tool.hatch.envs.hatch-test]
+default-args = ["tests"]
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.12", "3.11", "3.10"]
+default-args = ["test"]

@@ -202,7 +202,7 @@ if __name__ == '__main__':
                             for column_index in '12345678')
         laplace_demon = {'mode': all_squares}
         remaining_modes_usages = {float('inf'): ['mode'],
-                                  1: []}
+                                  0: []}
     
     class Pawn(Piece):
         def __repr__(self) -> str:
