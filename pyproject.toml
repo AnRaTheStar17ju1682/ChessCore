@@ -20,7 +20,8 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
 ]
 dependencies = [
-	"pytest"
+	"pytest",
+	"pytest-mock"
 ]
 
 [project.urls]
@@ -37,4 +38,3 @@ default-args = ["tests"]
 
 [[tool.hatch.envs.hatch-test.matrix]]
 python = ["3.12", "3.11", "3.10"]
-default-args = ["test"]

@@ -7,7 +7,7 @@ class BoardConfig:
                  row_len: int = 8,
                  column_len: int = 8,
                  row_letters: str = 'a-b-c-d-e-f-g-h',
-                 column_letters:str = '1-2-3-4-5-6-7-8'):
+                 column_letters: str = '1-2-3-4-5-6-7-8'):
         """
         Creates settings for creating instances of ChessBoard for sessions, both players share a common board
 
@@ -16,12 +16,13 @@ class BoardConfig:
             - row_letters and column_letters (str): '-' is the sep, letters kit for naming sidelanes in chess board.
         """
         # checking that enought letters for lines
-        assert (len(row_letters.split('-')) >= column_len
+        assert (len(row_letters.split('-')) >= row_len
                 and
-                len(column_letters.split('-')) >= row_len), 'not enough letters for rows or columns'
+                len(column_letters.split('-')) >= column_len), 'not enough letters for rows or columns'
         
         # checking that no one line is longer, than 26
-        assert 2 <= max(row_len, column_len) <= 26, 'board legnth more, than 26'
+        assert max(row_len, column_len) >= 2, 'both lenghts lesser, than 2'
+        assert max(row_len, column_len) <= 26, 'the lenght of some side more, than 26'
         
         self.row_len = row_len
         self.column_len = column_len
