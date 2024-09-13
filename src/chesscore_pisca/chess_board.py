@@ -68,7 +68,7 @@ class Board:
             if (piece := self.grid[position]['piece']) != None:
                 piece.charge(self, position)
     
-    def __repr__(self) -> str:
+    def __repr__(self) -> str: #1000 repeats = 0.1600 avg seconds
         """
         !!! позже реализовать нормальный return без всего говна с форами, который будет выводить
         в правильно порядке за счет создания ключей форматированием f"x-y"
@@ -112,7 +112,7 @@ class Board:
         key = f"{row_index}-{column_index}"
         file[key] = value
     
-    def move_piece(self, old_position: str, new_position:    str) -> None:
+    def move_piece(self, old_position: str, new_position: str) -> None:
         def possible(piece, new_position):
             for usages_left in sorted(piece.remaining_modes_usages, reverse=True)[:-1]:
                 for mode in piece.remaining_modes_usages[usages_left]:
@@ -123,12 +123,16 @@ class Board:
             else:
                 return False
         
+        
+        assert old_position in self.grid, "the try to move a unexisting square"
+        assert new_position in self.grid, "the try to move on a unexisting square"
+        assert self.grid[old_position]['piece'] != None, "there no piece in this square"
+        assert (possible_via := possible(self.grid[old_position]['piece'], new_position)), "this piece can't make such a move"
+        
+        
         new = self.grid[new_position]
         old = self.grid[old_position]
         
-        assert old['piece'] != None, "there no piece in this square"
-        assert new_position in self.grid, "grid doesn't have such a square"
-        assert (possible_via := possible(old['piece'], new_position)), f"this piece can't make such a move"
         
         # adds the piece to self.discareded_pieces if it's will be eaten
         if new['piece'] != None:
@@ -143,7 +147,11 @@ class Board:
         self.grid[new_position]['piece'].decrease_remaining_usages(possible_via)
 
 
-def initial_positions(board_config, file_name, *args: tuple[str | None, str | None, type]) -> str:
+def initial_positions(
+    board_config,
+    file_name: str = 'default_chess',
+    *args: tuple[str | None, str | None, type]
+) -> str:
     """
     func for setting pieces start positions, returns config for init the "Board class"
     recieves unlimited str args
@@ -163,7 +171,7 @@ def initial_positions(board_config, file_name, *args: tuple[str | None, str | No
     with shelve.open(file_name, 'n') as file:
         for arg in args:
             # cheking whether the piece class in tuple
-            assert arg[2], f'func recieved arg {arg} without a piece class'
+            assert arg[2], f'func recieved arg without a piece class'
             # checking that at least one coordinate given
             assert arg[0] or arg[1], 'at least one coordinate must be given'
             # checking that such an index exist in the board_config
@@ -189,50 +197,3 @@ def initial_positions(board_config, file_name, *args: tuple[str | None, str | No
             # fill the one square
             else:
                 Board.set_piece(file, arg[0], arg[1], piece_class)
-
-
-if __name__ == '__main__':
-    class Piece:   
-        def charge(*args, **kwargs):
-            pass
-        def decrease_remaining_usages(*args, **kwargs):
-            pass
-        
-        all_squares = tuple(f"{row_index}-{column_index}"
-                            for row_index in 'abcdefgh'
-                            for column_index in '12345678')
-        laplace_demon = {'mode': all_squares}
-        remaining_modes_usages = {float('inf'): ['mode'],
-                                  0: []}
-    
-    class Pawn(Piece):
-        def __repr__(self) -> str:
-            return '♙'
-    class Knight(Piece):
-        def __repr__(self) -> str:
-            return '♘'
-    class Bishop(Piece):
-        def __repr__(self) -> str:
-            return '♗'
-    class Rook(Piece):
-        def __repr__(self) -> str:
-            return '♖'
-    class Queen(Piece):
-        def __repr__(self) -> str:
-            return '♕'
-    class King(Piece):
-        def __repr__(self) -> str:
-            return '♔'
-    
-    config = BoardConfig()
-    positions_coordinates = ((None, '7', Pawn), (None, '2', Pawn), # two lines of pawns
-                             ('a', '8', Rook), ('a', '1', Rook), ('h', '8', Rook), ('h', '1', Rook),
-                             ('b', '8', Knight), ('b', '1', Knight), ('g', '8', Knight), ('g', '1', Knight),
-                             ('c', '8', Bishop), ('c', '1', Bishop), ('f', '8', Bishop), ('f', '1', Bishop),
-                             ('d', '8', Queen), ('d', '1', Queen), ('e', '8', King), ('e', '1', King))
-    positions = initial_positions(config, 'default_chess', *positions_coordinates)
-    board = Board(config, 'default_chess')
-    print(board, end='\n\n')
-    board.move_piece('a-2', 'a-4')
-    print('------------------------------------', end='\n\n')
-    print(board)
