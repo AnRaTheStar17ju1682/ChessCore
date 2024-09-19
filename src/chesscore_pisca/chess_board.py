@@ -37,16 +37,17 @@ class Board:
     """"
     Creates an instance of board with chess pieces in initial, positions using instance of BoardConfig class
     """
-    def __init__(self, board_config, init_positions_config):
+    def __init__(self, board_config, init_positions_config=None):
         self.board_config = board_config
         self.grid = dict()
         self.discarded_pieces = dict()
         
         """Reads config file to find out inital positions and which squares contains which pieces"""
         init_positions = dict()
-        with shelve.open(init_positions_config, 'r') as db:
-            for key, value in db.items():
-                init_positions[key] = value
+        if init_positions_config:
+            with shelve.open(init_positions_config, 'r') as db:
+                for key, value in db.items():
+                    init_positions[key] = value
         
         """Creates full chess board with pices from the inital_positions file"""
         color_switcher = True
@@ -60,7 +61,8 @@ class Board:
                 else:
                     self.grid[key] = {'piece': None, 'color': color}
                 color_switcher = not color_switcher
-            color_switcher = not color_switcher
+            if self.board_config.row_len % 2 == 0:
+                color_switcher = not color_switcher
         
         #
         for position in (f"{row_index}-{column_index}" for row_index in board_config.row_letters

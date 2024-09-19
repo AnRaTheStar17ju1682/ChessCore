@@ -1,24 +1,31 @@
-class MovementModes:
+class MovementMode:
     def func(self, board, position):
         return board.grid.keys()
+    
     
     def __init__(self, max_iterations = float('inf')):
         self.max_iterations = max_iterations
     
+    
     def __call__(self, board, position):
-        def iterable(self):
-            iteration = 0
+        iteration = 0
+        vposition = position
+        
+        while iteration < self.max_iterations:
+            # will repeates untill reaching max_iterations or end of grid
+            try:
+                vposition = self.func(board, vposition)
+            except IndexError:
+                break
             
-            while iteration < self.max_iterations:
-                # will repeates untill reaching max_iterations or end of grid
-                try:
-                    new_move = self.func(board, position)
-                except IndexError:
-                    raise StopIteration
-                iteration += 1
-                yield new_move
+            iteration += 1
             
-        return iterable(self)
+            if board.grid[vposition]['piece']:
+                yield vposition
+                break
+            else:
+                yield vposition
+    
     
     def move(self, board, position, *,
                     row: bool = False,
