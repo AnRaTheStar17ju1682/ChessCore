@@ -6,6 +6,22 @@ import shelve
 from chesscore_pisca import chess_board # type: ignore
 
 
+def Cat():
+    cat = umock.MagicMock()
+    cat.charge.return_value = None
+    cat.decrease_remaining_usages.return_value = None
+    cat.__str__.return_value = "k"
+    possible_moves = tuple(f"{row_index}-{column_index}"
+                           for row_index in 'abc'
+                           for column_index in '12')
+    cat.laplace_demon = {'mode': possible_moves}
+    cat.remaining_modes_usages = {
+        float('inf'): ['mode'],
+        0: []
+    }
+    return cat
+
+
 @pytest.fixture
 def mock_config(mocker):
     conf = mocker.Mock()
@@ -137,7 +153,7 @@ class TestInitialPositions():
 class TestBoard:
     @pytest.fixture
     def init_positions_config(self, mock_config, path):
-        positions = ((None, '1', TestBoard.Cat), (None, '3', TestBoard.Cat))
+        positions = ((None, '1', Cat), (None, '3', Cat))
         
         chess_board.initial_positions(mock_config, path, *positions)
 
@@ -147,23 +163,6 @@ class TestBoard:
     @pytest.fixture
     def board(self, mock_config, init_positions_config):
         return chess_board.Board(mock_config, init_positions_config)
-   
-    
-    @staticmethod
-    def Cat():
-        cat = umock.MagicMock()
-        cat.charge.return_value = None
-        cat.decrease_remaining_usages.return_value = None
-        cat.__str__.return_value = "k"
-        possible_moves = tuple(f"{row_index}-{column_index}"
-                               for row_index in 'abc'
-                               for column_index in '12')
-        cat.laplace_demon = {'mode': possible_moves}
-        cat.remaining_modes_usages = {
-            float('inf'): ['mode'],
-            0: []
-        }
-        return cat
         
     
     def test_board_init(self, board):
