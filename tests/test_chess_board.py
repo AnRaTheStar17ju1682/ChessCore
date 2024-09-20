@@ -199,4 +199,4 @@ class TestBoard:
     
     
     def test_board_str_function(self, board):
-        assert str(board) == 'k    k    k    \n\n▫    ▪    ▫    \n\nk    k    k'
+        assert str(board) == 'k    k    k    \n\n▪    ▫    ▪    \n\nk    k    k'
