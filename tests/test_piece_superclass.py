@@ -16,7 +16,7 @@ def piece():
     
     return DumbPiece()
 class TestPiece:
-    def test_init_dictionary_equality(self, piece):
+    def test_dictionary_equality(self, piece):
         # by default starting_remaining_modes_usages donesn't have a "0" key,
         # so i'll add it for a test
         piece.starting_remaining_modes_usages[0] = []
@@ -24,11 +24,11 @@ class TestPiece:
     
     
     # a instance single-use dictionary MUST DO NOT impact on a class dictionary
-    def test_init_dictionary_discreteness(self, piece):
+    def test_dictionary_discreteness(self, piece):
         assert piece.remaining_modes_usages is not piece.starting_remaining_modes_usages
     
     
-    def test_init_dictionary_discreteness(self, piece):
+    def test_dictionary_values_discreteness(self, piece):
         for key in piece.starting_remaining_modes_usages:
             # lists must be different
             assert piece.remaining_modes_usages[key] is not piece.starting_remaining_modes_usages[key]
