@@ -6,8 +6,8 @@ class BoardConfig:
     def __init__(self, *,
                  row_len: int = 8,
                  column_len: int = 8,
-                 row_letters: str = 'a-b-c-d-e-f-g-h',
-                 column_letters: str = '1-2-3-4-5-6-7-8'):
+                 row_letters: str = 'a-b-c-d-e-f-g-h-i-j-k-l-m-n-o-p-q-r-s-t-u-v-w-x-y-z',
+                 column_letters: str = '1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-17-18-19-20-21-22-23-24-25-26'):
         """
         Creates settings for creating instances of ChessBoard for sessions, both players share a common board
 
@@ -108,11 +108,6 @@ class Board:
             boardstr += '\n\n'
         return boardstr.rstrip()
     
-    # i will move it to initial_positions as a nested func
-    @staticmethod
-    def set_piece(file, row_index, column_index, value):
-        key = f"{row_index}-{column_index}"
-        file[key] = value
     
     def move_piece(self, old_position: str, new_position: str) -> None:
         def possible(piece, new_position):
@@ -145,8 +140,8 @@ class Board:
         
         self.grid[new_position]['piece'] = old['piece']
         self.grid[old_position]['piece'] = None
-        self.grid[new_position]['piece'].charge(self, new_position)
         self.grid[new_position]['piece'].decrease_remaining_usages(possible_via)
+        self.grid[new_position]['piece'].charge(self, new_position)
 
 
 def initial_positions(
@@ -169,7 +164,11 @@ def initial_positions(
     Returns:
         - str: the path to a config file, that tells to the "Board" class how it should fill grid.
     """
-#    with shelve.open(f'{file_name}.txt', 'n') as file:
+    def set_piece(file, row_index, column_index, value):
+        key = f"{row_index}-{column_index}"
+        file[key] = value
+    
+
     with shelve.open(file_name, 'n') as file:
         for arg in args:
             # cheking whether the piece class in tuple
@@ -189,13 +188,13 @@ def initial_positions(
             # fill the entire row
             if not arg[0]:
                 for row_index in board_config.row_letters:
-                    Board.set_piece(file, row_index, arg[1], piece_class)
+                    set_piece(file, row_index, arg[1], piece_class)
             
             # fill the entire column
             elif not arg[1]:
                 for column_index in board_config.column_letters:
-                    Board.set_piece(file, arg[0], column_index, piece_class)
+                    set_piece(file, arg[0], column_index, piece_class)
                     
             # fill the one square
             else:
-                Board.set_piece(file, arg[0], arg[1], piece_class)
+                set_piece(file, arg[0], arg[1], piece_class)

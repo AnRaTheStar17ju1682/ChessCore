@@ -1,6 +1,7 @@
 class Piece:
     # key = usages left, value = movement mode
     starting_remaining_modes_usages = {float('inf'): []}
+    first_step_only = []
     ico = '◎'
     
     def __init__(self):
@@ -36,8 +37,17 @@ class Piece:
             else:
                 continue
     
-    def decrease_remaining_usages(self, mode):
+    def decrease_remaining_usages(self, mode, *, first_step_only=None):
         remaining_usages = self.remaining_modes_usages
+        
+        ##
+        if first_step_only is None:
+            first_step_only = self.first_step_only
+        # second condition created to avoid double decreasion, when mode in both lists
+        if self.first_step_only and (first_step_mode := first_step_only[0]) is not mode:
+            self.first_step_only.remove(first_step_mode)
+            self.decrease_remaining_usages(first_step_mode, first_step_only=first_step_only[1:])
+        ##
         
         # this cycle find key what we need and stoping, but the key var (usages_left) leaves accessible
         for usages_left in remaining_usages:
